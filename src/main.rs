@@ -1,6 +1,9 @@
 fn main() {
     // share_reference();
-    take_ownership_problem();
+    // take_ownership_problem();
+    // give_ownership_problem();
+    // clone_vs_copy();
+    mutability_ownership_transfer();
 }
 
 fn share_reference() {
@@ -35,4 +38,49 @@ fn take_ownership_problem() {
 fn take_ownership(s: String) -> String {
     println!("{s}");
     s
+}
+
+fn give_ownership_problem() {
+    let s = give_ownership();
+    println!("{}",s);
+}
+
+fn give_ownership() -> String {
+    let s = String::from("hello, world");
+    // must convert string into bytes, for arbitrary reason
+    // let _s = s.into_bytes();
+    // the above will consume the data at s in the heap, 
+    // because into_bytes does not take an immutable reference, it just uses the reference in its
+    // entirety
+    // but a method called as_bytes() just uses a &self reference, and so we can use that instead
+    // to achieve our intended effect
+    let _s = s.as_bytes();
+    s
+}
+
+fn clone_vs_copy() {
+    // refactor the following code to be able to use .copy() instead of .clone()
+    // let x = (1, 2, (), "hello".to_string());
+    // let y = x;
+    // println!("{}. {}",x,y);
+
+    let x: (i32, i32, (), &str) = (1, 2, (), "hello");
+    // the below will implicitly use the .copy() fn to make a new variable y with the same data in
+    // the stack because all the data implements the .copy() trait
+    let y : (i32, i32, (), &str) = x;
+    println!("{:?}. {:?}",x,y);
+}
+
+fn mutability_ownership_transfer() {
+    let s: String = String::from("hello, ");
+
+    // the below will give the following error:
+    // "cannot borrow s1 as mutable because it is not decalred as mutable"
+    // let s1: String = s;
+    // therefore, we do the following modification to declare s1 as mutable
+    let mut s1: String = s;
+
+    s1.push_str("world");
+
+    println!("Success!");
 }
