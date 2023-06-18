@@ -5,7 +5,8 @@ fn main() {
     // clone_vs_copy();
     // mutability_ownership_transfer();
     // partial_moving();
-    tuple_references();
+    //  tuple_references();
+    tuple_references_2();
 }
 
 fn share_reference() {
@@ -113,6 +114,7 @@ fn partial_moving() {
     println!("the person's age: {}", person.age);
 }
 
+
 fn tuple_references() {
     let t = (String::from("hello"), String::from("world"));
 
@@ -121,4 +123,14 @@ fn tuple_references() {
     // only modify the below line to avoid the error
     // println!("{:?}", t);
     println!("{:?}", t.1);
+}
+
+// you could also achieve the following using t.clone()
+// instead of using ref
+fn tuple_references_2() {
+    let t = (String::from("hello"), String::from("world"));
+
+    let (ref s1, ref s2) = t;
+
+    println!("{:?}, {:?}, {:?}", s1, s2, t);
 }
