@@ -3,7 +3,9 @@ fn main() {
     // take_ownership_problem();
     // give_ownership_problem();
     // clone_vs_copy();
-    mutability_ownership_transfer();
+    // mutability_ownership_transfer();
+    // partial_moving();
+    tuple_references();
 }
 
 fn share_reference() {
@@ -83,4 +85,40 @@ fn mutability_ownership_transfer() {
     s1.push_str("world");
 
     println!("Success!");
+}
+
+fn partial_moving() {
+    #[derive(Debug)]
+    struct Person {
+        name: String,
+        age: Box<u8>
+    }
+
+    let person = Person {
+        name: String::from("Alice"),
+        age: Box::new(20)
+    };
+    
+    // 'name' is moved out of person, but 'age' is referenced
+    let Person { name, ref age } = person;
+
+    println!("The person's age is {}", age);
+    println!("The person's name is {}", name);
+
+    // the below will throw an error
+    // "Error! borrow of partially moved value: 'person' partial move occurs"
+    // println!("The person struct is {:?}", person);
+    // 'person' cannot be moved, but 'person.age' can be used as it is not moved
+
+    println!("the person's age: {}", person.age);
+}
+
+fn tuple_references() {
+    let t = (String::from("hello"), String::from("world"));
+
+    let _s = t.0;
+    
+    // only modify the below line to avoid the error
+    // println!("{:?}", t);
+    println!("{:?}", t.1);
 }
